@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LionPixel / لاین پیکسل</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P:wght@400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #000000;
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-squares {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .square {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(0, 255, 65, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.5);
+            animation: floatUp 8s infinite linear;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .mobile-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 2px solid #FFD700;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .mobile-logo {
+            color: #FFD700;
+            font-size: 16px;
+            text-shadow: 0 0 10px #FFD700;
+        }
+        
+        .hamburger {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 5px 0;
+        }
+        
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background: #FFD700;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+        
+        .mobile-menu {
+            position: fixed;
+            top: 60px;
+            left: -100%;
+            width: 100%;
+            height: calc(100vh - 60px);
+            background: rgba(0, 0, 0, 0.98);
+            transition: left 0.3s ease;
+            z-index: 99;
+            padding: 40px 20px;
+        }
+        
+        .mobile-menu.active {
+            left: 0;
+        }
+        
+        .mobile-menu-item {
+            display: block;
+            color: #00ff41;
+            text-decoration: none;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-item:hover {
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700;
+            padding-left: 20px;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 3;
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+        }
+        
+        .title {
+            font-size: clamp(24px, 5vw, 48px);
+            margin-bottom: 60px;
+            color: #FFD700;
+            text-shadow: 0 0 20px #FFD700;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #FFD700; }
+            to { text-shadow: 0 0 30px #FFD700, 0 0 40px #FFD700; }
+        }
+        
+        .subtitle {
+            font-size: clamp(12px, 3vw, 18px);
+            color: #00ff41;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+        }
+        
+        .ip-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            padding: 15px 25px;
+            margin: 20px auto;
+            width: fit-content;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        .ip-box:hover {
+            background: rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .shop-section {
+            margin: 20px 0;
+            padding: 20px 20px;
+        }
+        
+        .shop-title {
+            text-align: center;
+            font-size: clamp(24px, 4vw, 36px);
+            color: #FFD700;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #FFD700;
+        }
+        
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .shop-item {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .shop-item:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
+            transform: translateY(-5px);
+        }
+        
+        .item-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .item-name {
+            color: #00ff41;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .item-price {
+            color: #FFD700;
+            font-size: 20px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        
+        .buy-btn {
+            background: linear-gradient(145deg, #1a1a1a, #000);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 12px 25px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            width: 100%;
+        }
+        
+        .buy-btn:hover {
+            background: linear-gradient(145deg, #00ff41, #00cc33);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        .gamemodes-section {
+            margin: 60px 0;
+            padding: 40px 20px;
+        }
+        
+        .gamemodes-title {
+            text-align: center;
+            font-size: clamp(24px, 4vw, 36px);
+            color: #FFD700;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #FFD700;
+        }
+        
+        .gamemodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .gamemode-card {
+            background: rgba(15, 15, 15, 0.95);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transform: translateY(0);
+        }
+        
+        .gamemode-card.offline {
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), 0 0 40px rgba(255, 68, 68, 0.2);
+            background: rgba(20, 15, 15, 0.98);
+            position: relative;
+        }
+        
+        .gamemode-card.offline::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 16px;
+            background: rgba(255, 68, 68, 0.3);
+            animation: pulse-card-red 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse-card-red {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.02);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+        }
+        
+        .gamemode-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff41;
+            box-shadow: 0 8px 25px rgba(0, 255, 65, 0.15), 0 0 20px rgba(0, 255, 65, 0.1);
+            background: rgba(20, 20, 20, 0.98);
+        }
+        
+        .gamemode-card.offline:hover {
+            border-color: #ff4444;
+            box-shadow: 0 8px 25px rgba(255, 68, 68, 0.25), 0 0 30px rgba(255, 68, 68, 0.15);
+            background: rgba(25, 15, 15, 0.98);
+        }
+        
+        .gamemode-card.online {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4), 0 0 40px rgba(0, 255, 65, 0.2);
+            background: rgba(15, 20, 15, 0.98);
+            position: relative;
+        }
+        
+        .gamemode-card.online::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 16px;
+            background: rgba(0, 255, 65, 0.3);
+            animation: pulse-card-green 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse-card-green {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.02);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+        }
+        
+        .gamemode-card.online:hover {
+            border-color: #00ff41;
+            box-shadow: 0 8px 25px rgba(0, 255, 65, 0.25), 0 0 30px rgba(0, 255, 65, 0.15);
+            background: rgba(15, 25, 15, 0.98);
+        }
+        
+        .gamemode-card.active {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            background: rgba(20, 20, 20, 0.98);
+        }
+        
+        .gamemode-icon {
+            width: 48px;
+            height: 48px;
+            background: #FFD700;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .gamemode-info {
+            flex: 1;
+        }
+        
+        .gamemode-name {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .gamemode-version {
+            color: #888;
+            font-size: 8px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .gamemode-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .gamemode-status.online {
+            background: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .gamemode-status.offline {
+            background: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.8), 0 0 25px rgba(255, 68, 68, 0.4);
+        }
+        
+        .gamemode-status.offline::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            background: rgba(255, 68, 68, 0.4);
+            animation: pulse-red 2s infinite;
+        }
+        
+        .gamemode-status.disabled {
+            background: #777;
+            box-shadow: 0 0 8px rgba(119, 119, 119, 0.5);
+        }
+        
+        .gamemode-status.active {
+            background: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .gamemode-status.active::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: rgba(0, 255, 65, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .gamemode-card.online .gamemode-status {
+            background: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .gamemode-card.online .gamemode-status::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: rgba(0, 255, 65, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .gamemode-card.disabled {
+            opacity: 0.7;
+            cursor: default;
+            border-color: #444;
+            box-shadow: 0 0 8px rgba(102, 102, 102, 0.1);
+        }
+        
+        .gamemode-card.disabled .gamemode-icon {
+            background: linear-gradient(145deg, #777, #555);
+            opacity: 0.7;
+            box-shadow: 0 0 8px rgba(102, 102, 102, 0.4);
+        }
+        
+        .gamemode-card.disabled .gamemode-name {
+            color: #888;
+            text-shadow: 0 0 5px rgba(136, 136, 136, 0.3);
+        }
+        
+        .gamemode-card.disabled .gamemode-version {
+            color: #555;
+        }
+        
+        .gamemode-card.disabled:hover {
+            transform: none;
+            border-color: #555;
+            box-shadow: 0 0 12px rgba(102, 102, 102, 0.2);
+            background: rgba(20, 20, 20, 0.9);
+        }
+        
+        .gamemode-card.disabled:hover .gamemode-name {
+            color: #999;
+            text-shadow: 0 0 8px rgba(153, 153, 153, 0.4);
+        }
+        
+        .gamemode-card.disabled:hover .gamemode-icon {
+            transform: none;
+            box-shadow: 0 0 12px rgba(102, 102, 102, 0.5);
+        }
+        
+        @keyframes pulse-red {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .gamemode-status.online::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: rgba(0, 255, 65, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .gamemode-card:hover .gamemode-name {
+            color: #FFD700;
+        }
+        
+        .gamemode-card:hover .gamemode-icon {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        .about-section {
+            margin: 60px 0;
+            padding: 40px 20px;
+        }
+        
+        .about-title {
+            text-align: center;
+            font-size: clamp(24px, 4vw, 36px);
+            color: #FFD700;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #FFD700;
+        }
+        
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .about-text {
+            color: #00ff41;
+            font-size: clamp(10px, 2vw, 14px);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            font-family: Arial, sans-serif;
+        }
+        
+
+        
+
+
+
+        
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #00ff41;
+            margin-top: 40px;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .discord-icon {
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .discord-icon:hover {
+            color: #7289da;
+            transform: scale(1.1);
+        }
+        
+
+        
+        @media (max-width: 768px) {
+            .mobile-logo {
+                font-size: 12px;
+            }
+            
+            .mobile-menu-item {
+                font-size: 10px;
+                padding: 15px 0;
+            }
+            
+            .title {
+                font-size: 18px;
+                margin-bottom: 30px;
+            }
+            
+            .subtitle {
+                font-size: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .ip-box {
+                font-size: 8px;
+                padding: 10px 15px;
+            }
+            
+            .shop-title {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+            
+            .gamemodes-title {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+            
+            .shop-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            .shop-item {
+                padding: 20px 15px;
+            }
+            
+            .item-icon {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+            
+            .item-name {
+                font-size: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .item-price {
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .buy-btn {
+                font-size: 8px;
+                padding: 8px 15px;
+            }
+            
+            .gamemodes-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .gamemode-card {
+                padding: 15px;
+                gap: 12px;
+            }
+            
+            .gamemode-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            
+            .gamemode-name {
+                font-size: 10px;
+            }
+            
+            .gamemode-version {
+                font-size: 6px;
+            }
+            
+            .gamemode-status {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .container {
+                margin-top: 70px;
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+                margin-bottom: 25px;
+            }
+            
+            .shop-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .gamemodes-section {
+                padding: 20px 15px;
+                margin: 30px 0;
+            }
+            
+            .about-section {
+                padding: 20px 15px;
+                margin: 30px 0;
+            }
+            
+            .about-title {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+            
+            .about-text {
+                font-size: 8px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            
+
+
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-header">
+        <div class="mobile-logo">LionPixel</div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home" class="mobile-menu-item" onclick="closeMenu()">Home</a>
+        <a href="#shop" class="mobile-menu-item" onclick="closeMenu()">Shop</a>
+        <a href="#gamemodes" class="mobile-menu-item" onclick="closeMenu()">Game Modes</a>
+        <a href="#about" class="mobile-menu-item" onclick="closeMenu()">About Us</a>
+    </div>
+    
+    <div class="floating-squares" id="squares"></div>
+    
+    <div class="container">
+        <header class="header" id="home">
+            <h1 class="title">LionPixel</h1>
+            <p class="subtitle">The Best Minecraft Server</p>
+            <p class="subtitle">Experience Epic Adventures</p>
+            <p class="subtitle">Join Thousands of Players</p>
+            
+            <div class="ip-box" onclick="copyIP()">
+                <span>IP: Play.LionPixel.Ir</span>
+            </div>
+            
+
+
+        </header>
+        
+        <section class="shop-section" id="shop">
+            <h2 class="shop-title">SHOP</h2>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <div class="item-icon">💎</div>
+                    <h3 class="item-name">VIP</h3>
+                    <p class="item-price">تومان 12000</p>
+                    <button class="buy-btn" onclick="buyItem('https://your-vip-link.com')">BUY NOW</button>
+                </div>
+                
+                <div class="shop-item">
+                    <div class="item-icon">👑</div>
+                    <h3 class="item-name">VIP+</h3>
+                    <p class="item-price">تومان 18000</p>
+                    <button class="buy-btn" onclick="buyItem('https://your-vip-plus-link.com')">BUY NOW</button>
+                </div>
+                
+                <div class="shop-item">
+                    <div class="item-icon">⚔️</div>
+                    <h3 class="item-name">MVP</h3>
+                    <p class="item-price">تومان 25000</p>
+                    <button class="buy-btn" onclick="buyItem('https://your-mvp-link.com')">BUY NOW</button>
+                </div>
+                
+                <div class="shop-item">
+                    <div class="item-icon">🛡️</div>
+                    <h3 class="item-name">MVP+</h3>
+                    <p class="item-price">تومان 35000</p>
+                    <button class="buy-btn" onclick="buyItem('https://your-mvp-plus-link.com')">BUY NOW</button>
+                </div>
+                
+                <div class="shop-item">
+                    <div class="item-icon">🦁</div>
+                    <h3 class="item-name">LION</h3>
+                    <p class="item-price">تومان 50000</p>
+                    <button class="buy-btn" onclick="buyItem('https://your-lion-link.com')">BUY NOW</button>
+                </div>
+                
+                <div class="shop-item">
+                    <div class="item-icon">🌟</div>
+                    <h3 class="item-name">SPONSOR</h3>
+                    <p class="item-price">تومان 75000</p>
+                    <button class="buy-btn" onclick="buyItem('https://your-sponsor-link.com')">BUY NOW</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="gamemodes-section" id="gamemodes">
+            <h2 class="gamemodes-title">GAME MODES</h2>
+            <div class="gamemodes-grid">
+               
+                <div class="gamemode-card offline">
+                    <div class="gamemode-icon">
+                    <img src="bedwars.png" alt="BedWars" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onerror="this.src=''; this.alt='Image failed to load'; this.style.display='none';">
+                    </div>
+                    <div class="gamemode-info">
+                        <h3 class="gamemode-name">BedWars</h3>
+                        <p class="gamemode-version">version : 1.20</p>
+                    </div>
+                    <div class="gamemode-status offline"></div>
+                </div>
+                
+                <div class="gamemode-card offline">
+                    <div class="gamemode-icon">
+                        <img src="kingdomrp.png" alt="KingdomRP" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onerror="this.src=''; this.alt='Image failed to load'; this.style.display='none';">
+                    </div>
+                    <div class="gamemode-info">
+                        <h3 class="gamemode-name">KingdomRP</h3>
+                        <p class="gamemode-version">version : 1.20</p>
+                    </div>
+                    <div class="gamemode-status offline"></div>
+                </div>
+                
+                <div class="gamemode-card offline">
+                    <!-- اینجا میتونی عکس بازی Soon دوم رو بزاری -->
+                    <div class="gamemode-icon">
+                    <img src="practicepvp.png" alt="Practicepvp" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" onerror="this.src=''; this.alt='Image failed to load'; this.style.display='none';">
+                    </div>
+                    <div class="gamemode-info">
+                        <h3 class="gamemode-name">Practicepvp</h3>
+                        <p class="gamemode-version">version : 1.20</p>
+                    </div>
+                    <div class="gamemode-status offline"></div>
+                </div>
+                
+                <div class="gamemode-card disabled">
+                    <!-- اینجا میتونی عکس بازی Soon سوم رو بزاری -->
+                    <div class="gamemode-icon"></div>
+                    <div class="gamemode-info">
+                        <h3 class="gamemode-name">Soon</h3>
+                        <p class="gamemode-version">version : 1.20</p>
+                    </div>
+                    <div class="gamemode-status disabled"></div>
+                </div>
+                
+                <div class="gamemode-card disabled">
+                    <!-- اینجا میتونی عکس بازی Soon چهارم رو بزاری -->
+                    <div class="gamemode-icon"></div>
+                    <div class="gamemode-info">
+                        <h3 class="gamemode-name">Soon</h3>
+                        <p class="gamemode-version">version : 1.20</p>
+                    </div>
+                    <div class="gamemode-status disabled"></div>
+                </div>
+                
+                <div class="gamemode-card disabled">
+                    <!-- اینجا میتونی عکس بازی Soon پنجم رو بزاری -->
+                    <div class="gamemode-icon"></div>
+                    <div class="gamemode-info">
+                        <h3 class="gamemode-name">Soon</h3>
+                        <p class="gamemode-version">version : 1.20</p>
+                    </div>
+                    <div class="gamemode-status disabled"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="about-section" id="about">
+            <h2 class="about-title">ABOUT US</h2>
+            <div class="about-content">
+                <p class="about-text">
+                    Welcome to LionPixel, the ultimate Minecraft server experience! We've been creating unforgettable adventures since 2020, bringing together thousands of players from around the world.
+                </p>
+                
+                <p class="about-text">
+                    Our dedicated team works 24/7 to ensure the best gaming experience with custom plugins, unique game modes, and a friendly community. Whether you're a builder, fighter, or explorer, LionPixel has something special for everyone.
+                </p>
+                
+                <p class="about-text">
+                    Join our growing family of over 50,000 registered players and discover why LionPixel is considered one of the best Minecraft servers. Experience epic quests, build magnificent structures, and make lasting friendships!
+                </p>
+                
+                <p class="about-text">
+                    🎮 <strong>50,000+</strong> registered players | 🌐 <strong>24/7</strong> online support | ⚡ <strong>99.9%</strong> server uptime | 🎯 <strong>5+</strong> unique game modes
+                </p>
+            </div>
+        </section>
+
+
+
+    </div>
+    
+
+    
+
+    
+    <footer style="display: flex; justify-content: space-between; align-items: center; padding: 40px 30px; background: rgba(0,0,0,0.9); border-top: 2px solid #00ff41; margin-top: 40px; color: #666; font-family: Arial, sans-serif; text-align: center;">
+
+      <!-- بخش اول: Secure Payment با لوگوها -->
+      <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <!-- آیکن سپر -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="color: #666; flex-shrink: 0;">
+          <path fill-rule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m2.146 5.146a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793z"/>
+        </svg>
+        
+        <!-- متن Secure Payment -->
+        <span style="font-weight: 600; font-size: 18px; color: #666; white-space: nowrap;">Secure Payment</span>
+        
+        <!-- تصاویر پرداخت -->
+        <a href="" target="_blank" style="display: inline-block;">
+          <img src="https://www.trexmine.com/_next/image/?url=%2Fimages%2Fzarinpal.png&w=96&q=75" alt="Zarinpal" style="width: 30px; height: auto; filter: drop-shadow(0 0 8px #FFD700);" />
+        </a>
+        <a href="#" target="_blank" style="display: inline-block;">
+          <img src="https://www.trexmine.com/_next/image/?url=%2Fimages%2Fenamad.png&w=128&q=75" alt="Enamad" style="width: 30px; height: auto; filter: drop-shadow(0 0 8px #00BFFF);" />
+        </a>
+      </div>
+
+      <!-- بخش دوم: آیکن‌های شبکه‌های اجتماعی و متن کپی‌رایت -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <!-- دیسکورد -->
+        <a href="https://discord.gg/G6N4FnksJS" target="_blank" aria-label="Discord" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border: 2px solid #444; border-radius: 8px; text-decoration: none; transition: all 0.3s ease;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#666" viewBox="0 0 16 16" class="discord-svg" style="transition: fill 0.3s ease;">
+            <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025 13.2 13.2 0 0 0-3.257 1.011.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019M5.347 10.214c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
+          </svg>
+        </a>
+
+        <!-- تلگرام -->
+        <a href="#" target="_blank" aria-label="Telegram" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border: 2px solid #444; border-radius: 8px; text-decoration: none; transition: all 0.3s ease;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#666" viewBox="0 0 16 16" class="telegram-svg" style="transition: fill 0.3s ease;">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.287 5.906q-1.168.486-4.666 2.01-.567.225-.595.442c-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294q.39.01.868-.32 3.269-2.206 3.374-2.23c.05-.012.12-.026.166.016s.042.12.037.141c-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8 8 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629q.14.092.27.187c.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.4 1.4 0 0 0-.013-.315.34.34 0 0 0-.114-.217.53.53 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09"/>
+          </svg>
+        </a>
+        
+        <!-- متن کپی‌رایت -->
+        <div style="font-size: 18px; color: #666; font-weight: 600;">
+          LionPixel 2025 ©
+        </div>
+      </div>
+
+      <!-- استایل‌های هاور -->
+      <style>
+        a:hover .discord-svg {
+          fill: #7289da !important;
+        }
+        
+        a:hover .telegram-svg {
+          fill: #0088cc !important;
+        }
+        
+        footer a:hover {
+          border-color: #00ff41 !important;
+          transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+          footer {
+            flex-direction: column !important;
+            gap: 15px !important;
+            padding: 25px 15px !important;
+          }
+          
+          footer > div:first-child {
+            gap: 10px !important;
+          }
+          
+          footer > div:first-child svg {
+            width: 14px !important;
+            height: 14px !important;
+          }
+          
+          footer > div:first-child span {
+            font-size: 14px !important;
+          }
+          
+          footer > div:first-child img {
+            width: 25px !important;
+          }
+          
+          footer > div:nth-child(2) {
+            gap: 8px !important;
+          }
+          
+          footer > div:nth-child(2) > div {
+            font-size: 14px !important;
+          }
+          
+          footer > div:nth-child(2) a {
+            width: 30px !important;
+            height: 30px !important;
+          }
+          
+          footer > div:nth-child(2) svg {
+            width: 14px !important;
+            height: 14px !important;
+          }
+        }
+      </style>
+
+    </footer>
+    
+    <script>
+        // Create floating squares
+        function createSquares() {
+            const squaresContainer = document.getElementById('squares');
+            const numSquares = 20;
+            
+            for (let i = 0; i < numSquares; i++) {
+                const square = document.createElement('div');
+                square.className = 'square';
+                square.style.left = Math.random() * 100 + '%';
+                square.style.animationDelay = Math.random() * 8 + 's';
+                square.style.animationDuration = (6 + Math.random() * 4) + 's';
+                squaresContainer.appendChild(square);
+            }
+        }
+        
+        // Toggle mobile menu
+        function toggleMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        }
+        
+
+        
+        // Copy IP function
+        function copyIP() {
+            navigator.clipboard.writeText('Play.LionPixel.Ir').then(function() {
+                // Visual feedback
+                const ipBox = document.querySelector('.ip-box');
+                const originalText = ipBox.innerHTML;
+                ipBox.innerHTML = '<span>کپی شد! ✓</span>';
+                ipBox.style.background = 'rgba(0, 255, 0, 0.2)';
+                ipBox.style.borderColor = '#00ff00';
+                
+                setTimeout(() => {
+                    ipBox.innerHTML = originalText;
+                    ipBox.style.background = 'rgba(0, 0, 0, 0.8)';
+                    ipBox.style.borderColor = '#FFD700';
+                }, 2000);
+            }).catch(function() {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = 'Play.LionPixel.Ir';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Visual feedback
+                const ipBox = document.querySelector('.ip-box');
+                const originalText = ipBox.innerHTML;
+                ipBox.innerHTML = '<span>کپی شد! ✓</span>';
+                ipBox.style.background = 'rgba(0, 255, 0, 0.2)';
+                ipBox.style.borderColor = '#00ff00';
+                
+                setTimeout(() => {
+                    ipBox.innerHTML = originalText;
+                    ipBox.style.background = 'rgba(0, 0, 0, 0.8)';
+                    ipBox.style.borderColor = '#FFD700';
+                }, 2000);
+            });
+        }
+        
+        // Buy item function
+        function buyItem(purchaseLink) {
+            // Open the specific purchase link for each item
+            window.open(purchaseLink, '_blank', 'noopener,noreferrer');
+        }
+        
+        // Close menu function
+        function closeMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+        }
+        
+
+        
+
+
+
+        // Initialize
+        createSquares();
+        
+
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'988b331ee08622b0',t:'MTc1OTQ4MTUwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
